@@ -44,14 +44,21 @@ restau = {}
 # carry out the scraping task (query limitation is 5000 per hour)
 url = 'https://api.foursquare.com/v2/venues/explore'
 n = 0
+print 'starting the task'
 for i in range(len(final)):
     restau[i] = requests.get(url=url, params=params_all[i]).json()
     n += 1
-    if n % 3000.0 == 0:
+    if (n + 3000 <= len(final)) and (n % 3000.0 == 0):
         print 'parsed {0} records'.format(n)
-        with open('ratings.pkl', 'w') as fh:
+        with open('ratings_all.pkl', 'w') as fh:
             pickle.dump(restau, fh)
             print 'the work has been saved'
         print 'resting'
         time.sleep(3600)
+        print 'resume'
+    elif (n + 1 == len(final)):
+        print 'parsed {0} records'.format(n)
+        with open('ratings_all.pkl', 'w') as fh:
+            pickle.dump(restau, fh)
+            print 'the work has been saved'
 print 'task finished.'
